@@ -18,11 +18,16 @@
     @import url('https://fonts.googleapis.com/css?family=Mulish:400,500');
   </style>
 
-  <!-- Einheitlicher Hintergrund, Textfarben und Slideshow -->
+  <!-- Styles -->
   <style>
     * { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; -o-font-smoothing: antialiased; }
     html { scroll-behavior: smooth; }
-    body, main, section { background-color: #fff !important; color: #000 !important; }
+
+    /* ✅ NICHT mehr global sections killen */
+    body, main { background-color: #fff !important; color: #000 !important; }
+    section { background-color: #fff; color: #000; }
+    header { background: transparent !important; }
+
     a { color: #000; text-decoration: none; }
 
     /* Header-Text nur weiß */
@@ -31,49 +36,42 @@
     /* Überschriften einheitlich */
     h2, h3 { font-size: 24px; font-weight: 500; margin-bottom: 15px; }
 
-    /* Slideshow / Scroller */
-    .slideshow-container {
-      position: relative;
-      overflow: hidden;
-      width: 100%;
-      height: 200px;
-      margin-top: 20px;
-    }
-
-    .slideshow-track {
-      display: flex;
-      width: max-content;
-      animation: scroll-left 20s linear infinite;
-    }
-
-    .slideshow-track img {
-      height: 100%;
-      margin-right: 20px;
-      border-radius: 8px;
-    }
-
-    @keyframes scroll-left {
-      0% { transform: translateX(0); }
-      100% { transform: translateX(-50%); }
-    }
-
-    .slideshow-container:hover .slideshow-track {
-      animation-play-state: paused;
-    }
-
     /* Header Anpassung */
-    .header88_card { background: none !important; }
-    .header88_background-image-wrapper { background: none !important; }
-    .image-overlay-layer { display: block; background: rgba(0,0,0,0.4); position: absolute; top:0; left:0; width:100%; height:100%; }
+    .header88_card { background: none !important; position: relative; overflow: hidden; }
+
+    /* ✅ Header Background Layering wie Webflow erwartet */
+    .header88_background-image-wrapper {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+    }
+
+    .header88_background-image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .image-overlay-layer {
+      display: block;
+      background: rgba(0,0,0,0.4);
+      position: absolute;
+      top:0; left:0;
+      width:100%; height:100%;
+      z-index: 2;
+    }
+
+    .header88_card-content {
+      position: relative;
+      z-index: 3;
+    }
 
     /* Buttons */
     .button.is-secondary { background-color: #fff; color: #000; border: 1px solid #000; }
     .button.is-secondary:hover { background-color: #000; color: #fff; }
     .button.is-link { background-color: #fff; color: #000; border: 1px solid #000; border-radius: 0; }
     .button.is-link:hover { background-color: #000; color: #fff; }
-
-    /* Abstände zwischen Impressum & Datenschutz */
-    #datenschutz { margin-top: 60px; }
 
     /* Header Info Fläche */
     .header-info-bar {
@@ -85,13 +83,17 @@
       margin-bottom: 20px;
     }
 
-    /* Datenschutz Textabstände */
+    /* Datenschutz Abstand + mehr unten */
+    #datenschutz {
+      margin-top: 60px;
+      padding-bottom: 160px; /* ✅ mehr Abstand zum Boden */
+    }
+
     #datenschutz h2 { margin-bottom: 20px; }
     #datenschutz p, #datenschutz h3 { margin-bottom: 15px; }
 
     /* Mobile-Responsive Styles */
     @media (max-width: 768px) {
-      /* Header-Text */
       .header88_card-content {
         padding: 20px;
         text-align: center;
@@ -104,8 +106,7 @@
         font-size: 16px;
         line-height: 1.5;
       }
-      
-      /* Buttons */
+
       .button-group {
         display: flex;
         flex-direction: column;
@@ -113,30 +114,16 @@
         align-items: center;
       }
 
-      /* Slideshow */
-      .slideshow-container {
-        height: 150px;
-      }
-      .slideshow-track img {
-        height: 100%;
-        margin-right: 10px;
-      }
+      .contact13_component { text-align: center; }
+      .contact5_content-left { margin-bottom: 20px; }
 
-      /* Kontaktbereich */
-      .contact13_component {
-        text-align: center;
-      }
-      .contact5_content-left {
-        margin-bottom: 20px;
-      }
+      #impressum, #datenschutz { padding: 40px 20px; }
 
-      /* Datenschutz / Impressum Abstände */
-      #impressum, #datenschutz {
-        padding: 40px 20px;
-      }
+      #datenschutz { padding-bottom: 220px; } /* ✅ noch mehr unten auf Mobile */
     }
   </style>
 </head>
+
 <body>
   <div class="page-wrapper">
     <main class="main-wrapper">
@@ -151,6 +138,7 @@
             <div class="padding-section-medium">
               <div class="header88_component">
                 <div class="header88_card">
+
                   <div class="header88_card-content header-text-white">
                     <div class="max-width-medium">
                       <div class="margin-bottom margin-small">
@@ -163,56 +151,30 @@
                         Zögern Sie nicht, greifen Sie zum Hörer oder kommen Sie einfach mal vorbei.
                       </p>
                     </div>
+
                     <div class="margin-top margin-medium">
                       <div class="button-group">
                         <a href="#contact" class="button is-secondary w-button">Kontakt</a>
-                        <a href="#services" class="button is-secondary w-button">Services</a>
                         <a href="#impressum" class="button is-secondary w-button">Impressum</a>
                         <a href="#datenschutz" class="button is-secondary w-button">Datenschutz</a>
                       </div>
                     </div>
                   </div>
+
+                  <!-- ✅ Bild ist wieder sichtbar (Layering korrekt) -->
                   <div class="header88_background-image-wrapper">
                     <div class="image-overlay-layer"></div>
                     <img sizes="(max-width: 2560px) 100vw, 2560px"
                       srcset="https://cdn.prod.website-files.com/68d297bbd986416e6b1bed55/68d298a450faf595072a2226_relume-401359.jpeg 2560w"
                       alt="Palettenservice Duisburg" loading="eager" class="header88_background-image">
                   </div>
+
                 </div>
               </div>
             </div>
           </div>
         </div>
       </header>
-
-      <!-- SERVICES mit Slideshow -->
-      <section id="services">
-        <div class="padding-global">
-          <div class="container-large">
-            <div class="padding-section-large">
-              <div class="layout3_component">
-                <div class="margin-bottom margin-small">
-                  <h2>Unsere Auswahl an Paletten</h2>
-                </div>
-
-                <!-- Slideshow -->
-                <div class="slideshow-container">
-                  <div class="slideshow-track">
-                    <img src="https://via.placeholder.com/300x200?text=Bild1" alt="Bild1">
-                    <img src="https://via.placeholder.com/300x200?text=Bild2" alt="Bild2">
-                    <img src="https://via.placeholder.com/300x200?text=Bild3" alt="Bild3">
-                    <img src="https://via.placeholder.com/300x200?text=Bild4" alt="Bild4">
-                    <img src="https://via.placeholder.com/300x200?text=Bild1" alt="Bild1">
-                    <img src="https://via.placeholder.com/300x200?text=Bild2" alt="Bild2">
-                    <img src="https://via.placeholder.com/300x200?text=Bild3" alt="Bild3">
-                    <img src="https://via.placeholder.com/300x200?text=Bild4" alt="Bild4">
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
 
       <!-- CONTACT -->
       <section id="contact">
@@ -225,29 +187,35 @@
                     <h2>Nehmen Sie Kontakt auf</h2>
                   </div>
                 </div>
+
                 <div class="w-layout-grid contact13_content">
                   <div class="contact5_content-left">
                     <div class="contact13_contact-list">
+
                       <div class="contact11_item">
                         <div class="margin-bottom margin-xxsmall"><h3>Email</h3></div>
                         <a href="mailto:Palettenservice0202@gmail.com" class="text-style-link">Palettenservice0202@gmail.com</a>
                       </div>
+
                       <div class="contact11_item">
                         <div class="margin-bottom margin-xxsmall"><h3>Telefon</h3></div>
                         <a href="tel:+491638100202" class="text-style-link">+49 163 8100202</a>
                       </div>
+
                       <div class="contact11_item">
                         <div class="margin-bottom margin-xxsmall"><h3>Adresse</h3></div>
-                        <div>Duisburg, Germany</div>
+                        <div>Lauerstraße 64, 47198 Duisburg</div>
                         <div class="margin-top margin-small">
                           <div class="button-group">
                             <a href="#" class="button is-link w-inline-block" id="map-link">Auf Karte anzeigen</a>
                           </div>
                         </div>
                       </div>
+
                     </div>
                   </div>
                 </div>
+
               </div>
             </div>
           </div>
@@ -259,13 +227,12 @@
         <div class="padding-global">
           <div class="container-large">
             <h2>Impressum</h2>
-            <p><strong>Firma:</strong> Palettenservice Duisburg GmbH</p>
-            <p><strong>Adresse:</strong> Musterstraße 1, 47051 Duisburg, Deutschland</p>
+            <p><strong>Firma:</strong> Palettenservice Duisburg </p>
+            <p><strong>Adresse:</strong> Lauerstraße 64, 47198 Duisburg, Deutschland</p>
             <p><strong>Telefon:</strong> +49 163 8100202</p>
             <p><strong>Email:</strong> Palettenservice0202@gmail.com</p>
             <p><strong>Geschäftsführer:</strong> Selahattin Yücel</p>
-            <p><strong>Handelsregister:</strong> Duisburg HRB 12345</p>
-            <p><strong>Umsatzsteuer-ID:</strong> 220957362</p>
+            <p><strong>Umsatzsteuer-ID:</strong> DE220957362</p>
           </div>
         </div>
       </section>
@@ -288,16 +255,10 @@
   <script src="https://cdn.prod.website-files.com/68d297bbd986416e6b1bed55/js/webflow.751e0867.148dc658e77a3916.js"></script>
 
   <script>
-    // Scroll zu Services
-    document.querySelector('a[href="#services"]').addEventListener("click", function(e) {
-      e.preventDefault();
-      document.querySelector('#services').scrollIntoView({ behavior: "smooth", block: "center" });
-    });
-
-    // Map Link
+    // Map Link (richtige Adresse)
     document.getElementById("map-link").addEventListener("click", function(e) {
       e.preventDefault();
-      const address = encodeURIComponent("Duisburg, Germany");
+      const address = encodeURIComponent("Lauerstraße 64, 47198 Duisburg");
       const ua = navigator.userAgent.toLowerCase();
       if (/android/.test(ua)) {
         window.location.href = "geo:0,0?q=" + address;
@@ -310,4 +271,3 @@
   </script>
 </body>
 </html>
-
